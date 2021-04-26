@@ -10,19 +10,16 @@ namespace RestShape
     class Program
     {
 
-       //public static string mainHostCamera = "https://192.168.1.40:7001"; // link cam gs
+     // public static string mainHostCamera = "https://192.168.1.40:7001"; // link cam gs
      // public static string mainHostCamera = "http://127.31.3.251:7001"; // link cam nv
-      public static string mainHostCamera = "http://localhost:7001"; // link cam nv
-
+        public static string mainHostCamera = "http://localhost:7001";   // link cam nv
         public static string urlBookingData = "https://dev-ni-operation-gateway.novaland.com.vn/api/v1/booking-room";
         public static string apiUserNameCamera = "adminapi";
         public static string apiPasswordCamera = "adminapi123";
-        public static string idPhongHop3 = "5fd1a31791ccac0b95adc597";
         public static string idCamPhongHop3 = "01545f02-922f-9fa9-5769-41781d6ecd03";
         public static string idCamPhongHop3_1 = "aaac6172-b2f7-1ea6-a099-519d751ffcdc";
         public static string idCamPhongHop4 = "c217acf2-6906-786f-2e32-0b34f8c37003";
         public static string idCamPhongHop4_1 = "d9baff15-f4f0-561e-1e99-038df483cf3f";
-
 
         public static bool showMenu = true;
         //public static List<CameraExClass.Root> listCameraEx;
@@ -60,7 +57,7 @@ namespace RestShape
                 //    Console.ReadLine();
                 //    break;
                 case "1":
-                    getBookingData();
+                     getBookingData();
                     Console.WriteLine("Get Bookmark Data Successfull");
                     Console.ReadLine();
                     break;
@@ -85,7 +82,7 @@ namespace RestShape
 
         public static void getBookingData()
         {
-            IRestClient restClient = new RestClient(urlBookingData);
+            IRestClient restClient = new RestClient(urlBookingData+ "?StartTime="+ getCurrentDateStart() + "&EndTime="+ getCurrentDateEnd());
             IRestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Authorization", "Q.BThOYoGjVv~p5.l.HWK2l.Jcamerax6x2762w");
             request.AddHeader("Content-Type", "application/json");
@@ -149,34 +146,32 @@ namespace RestShape
         public static void addBookmark()
         {
 
-            if (ListBooking.Count!=0)
-            // chạy theo list bookmark
-
-            for (int i = 0; i < ListBooking.Count; i++)
-            {
-                if (ListBooking[i].StatusCode== "Approved")
-                switch (ListBooking[i].ResourceId)
+            if (ListBooking.Count != 0)
+                // chạy theo list bookmark
+                for (int i = 0; i < ListBooking.Count; i++)
                 {
-                   // case "608640e06f67970d379dbb52": // phòng 3
-                    case "5fd1a31791ccac0b95adc597": // phòng 3
-                        getAddBookmarkCall(idCamPhongHop3, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
-                        getAddBookmarkCall(idCamPhongHop3_1, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
-                        break;
-                    case "6086418d6f67970d379dbeb3":
-                        getAddBookmarkCall(idCamPhongHop4, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
-                        getAddBookmarkCall(idCamPhongHop4_1, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
-                        break;
+                    if (ListBooking[i].StatusCode == "Approved")
+
+                        if (ListBooking[i].ResourceId == "608640e06f67970d379dbb52")
+                        {
+                            //  case "5fd1a31791ccac0b95adc597": // phòng 3
+                            getAddBookmarkCall(idCamPhongHop3, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
+                            getAddBookmarkCall(idCamPhongHop3_1, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
+                        }
+                        else
+                        {
+                            if (ListBooking[i].ResourceId == "6086418d6f67970d379dbeb3")
+                            {
+                                getAddBookmarkCall(idCamPhongHop4, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
+                                getAddBookmarkCall(idCamPhongHop4_1, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
+                            }
+                        }
                 }
-            }
             else
             {
                 getBookingData();
                 addBookmark();
             }
-
-            Console.WriteLine("Addbookmark Successfull");
-            Console.ReadLine();
-
         }
 
         //        "StartTime": "2020-11-10T05:20:00.000Z",
@@ -215,5 +210,20 @@ namespace RestShape
             long milisecondTime = (long)(dateSt.Subtract(new DateTime(1970, 1, 1, 14, 0, 0, 0)).TotalSeconds * 1000);
             return milisecondTime;
         }
+
+        public static string getCurrentDateStart()
+        {
+            DateTime utcDate = DateTime.UtcNow;
+            String a = utcDate.Year + "-" + utcDate.Month + "-" + utcDate.Day + "T00:00:00.000Z";
+            return a;
+        }
+        public static string getCurrentDateEnd()
+        {
+            DateTime utcDate = DateTime.UtcNow;
+            String a = utcDate.Year + "-" + utcDate.Month + "-" + utcDate.Day + "T23:59:59.000Z";
+            return a;
+        }
+
+
     }
 }
