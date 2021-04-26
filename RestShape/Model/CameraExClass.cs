@@ -4,8 +4,9 @@ using System.Text;
 
 namespace RestShape.Model
 {
-    class CameraExClass
+   public class CameraExClass
     {
+        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
         public class AddParam
         {
             public string name { get; set; }
@@ -59,6 +60,8 @@ namespace RestShape.Model
             public string userDefinedGroupName { get; set; }
             public string vendor { get; set; }
         }
+
+
 
 
     }
