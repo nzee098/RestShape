@@ -10,8 +10,9 @@ namespace RestShape
     class Program
     {
 
-     // public static string mainHostCamera = "https://192.168.1.40:7001"; // link cam gs
-     // public static string mainHostCamera = "http://127.31.3.251:7001"; // link cam nv
+        public static System.Timers.Timer timer = new System.Timers.Timer(  1000); //24h
+        // public static string mainHostCamera = "https://192.168.1.40:7001"; // link cam gs
+        // public static string mainHostCamera = "http://127.31.3.251:7001"; // link cam nv
         public static string mainHostCamera = "http://localhost:7001";   // link cam nv
         public static string urlBookingData = "https://dev-ni-operation-gateway.novaland.com.vn/api/v1/booking-room";
         public static string apiUserNameCamera = "adminapi";
@@ -26,8 +27,11 @@ namespace RestShape
         public static List<BookingApiResponse.Root> ListBooking;
 
 
+
         static void Main(string[] args)
         {
+
+     
 
             while (showMenu)
             {
@@ -36,37 +40,35 @@ namespace RestShape
         }
 
 
+        static void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            // do action here
+            addBookmark();
+        
+        }
+
         static public void DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("BookMark NX Camera Manage");
             Console.WriteLine();
            
-            Console.WriteLine("1. Get Bookmark Data From NovaLand Apis");
-            Console.WriteLine("2. Addbookmark");
-            Console.WriteLine("3. Config Info");
-            Console.WriteLine("4. Exit");
+            Console.WriteLine("1. Run");
+            Console.WriteLine("2. Config Info");
+            Console.WriteLine("3. Exit");
             string result = Console.ReadLine();
 
             switch (result)
             {
-                //case "1":
-                //   // getListCamnerOnSever();
-                //    Console.WriteLine("Get List Successfull");
-                //   // Console.WriteLine("List Length:" + listCameraEx.Count);
-                //    Console.ReadLine();
-                //    break;
+        
                 case "1":
-                     getBookingData();
-                    Console.WriteLine("Get Bookmark Data Successfull");
+                    timer.Enabled = true;
+                    timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+                    timer.Start();
+                  //  Console.WriteLine("Get Bookmark Data Successfull");
                     Console.ReadLine();
                     break;
                 case "2":
-                    addBookmark();
-                    Console.WriteLine("Addbookmark Successfull");
-                    Console.ReadLine();
-                    break;
-                case "3":
                     configInfo();
                     Console.ReadLine();
                     break;
@@ -82,7 +84,9 @@ namespace RestShape
 
         public static void getBookingData()
         {
+  
             IRestClient restClient = new RestClient(urlBookingData+ "?StartTime="+ getCurrentDateStart() + "&EndTime="+ getCurrentDateEnd());
+
             IRestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Authorization", "Q.BThOYoGjVv~p5.l.HWK2l.Jcamerax6x2762w");
             request.AddHeader("Content-Type", "application/json");
@@ -101,8 +105,12 @@ namespace RestShape
             if (restResponse.IsSuccessful)
             {
                 Console.WriteLine("Status Code :" + restResponse.StatusCode);
+                if (ListBooking.Count>0)
+                {
+                    ListBooking.Clear();
+                }
                 ListBooking = JsonConvert.DeserializeObject<List<BookingApiResponse.Root>>(restResponse.Content);
-                Console.WriteLine(ListBooking[0].StartTime);
+             //  Console.WriteLine(ListBooking[0].StartTime);
             }
          
 
@@ -169,6 +177,7 @@ namespace RestShape
                 }
             else
             {
+                //chỗ này
                 getBookingData();
                 addBookmark();
             }
@@ -214,14 +223,16 @@ namespace RestShape
         public static string getCurrentDateStart()
         {
             DateTime utcDate = DateTime.UtcNow;
-            String a = utcDate.Year + "-" + utcDate.Month + "-" + utcDate.Day + "T00:00:00.000Z";
-            return a;
+            string a = utcDate.ToString("yyyy-MM-dd");
+            String b = a + "T00:00:00.000Z";
+            return b;
         }
         public static string getCurrentDateEnd()
         {
             DateTime utcDate = DateTime.UtcNow;
-            String a = utcDate.Year + "-" + utcDate.Month + "-" + utcDate.Day + "T23:59:59.000Z";
-            return a;
+            string a = utcDate.ToString("yyyy-MM-dd");
+             String b = a+ "T23:59:59.000Z";
+            return b;
         }
 
 
