@@ -10,11 +10,12 @@ namespace RestShape
     class Program
     {
 
-        public static System.Timers.Timer timer = new System.Timers.Timer(  1000); //24h
+        public static System.Timers.Timer timer = new System.Timers.Timer( 24*60*60* 1000); //24h
         // public static string mainHostCamera = "https://192.168.1.40:7001"; // link cam gs
         // public static string mainHostCamera = "http://127.31.3.251:7001"; // link cam nv
         public static string mainHostCamera = "http://localhost:7001";   // link cam nv
-        public static string urlBookingData = "https://dev-ni-operation-gateway.novaland.com.vn/api/v1/booking-room";
+
+        public static string urlBookingData = "https://dev-ihub-gateway.novaland.com.vn/api/v1/spoint/booking-room";
         public static string apiUserNameCamera = "adminapi";
         public static string apiPasswordCamera = "adminapi123";
         public static string idCamPhongHop3 = "01545f02-922f-9fa9-5769-41781d6ecd03";
@@ -88,7 +89,7 @@ namespace RestShape
             IRestClient restClient = new RestClient(urlBookingData+ "?StartTime="+ getCurrentDateStart() + "&EndTime="+ getCurrentDateEnd());
 
             IRestRequest request = new RestRequest(Method.GET);
-            request.AddHeader("Authorization", "Q.BThOYoGjVv~p5.l.HWK2l.Jcamerax6x2762w");
+            request.AddHeader("Authorization", "Q.BThOYoGjVv~p5.l.HWK2l.Jfx6x2762w");
             request.AddHeader("Content-Type", "application/json");
 
 
@@ -160,7 +161,7 @@ namespace RestShape
                 {
                     if (ListBooking[i].StatusCode == "Approved")
 
-                        if (ListBooking[i].ResourceId == "608640e06f67970d379dbb52")
+                        if (ListBooking[i].ResourceId == "1")
                         {
                             //  case "5fd1a31791ccac0b95adc597": // phòng 3
                             getAddBookmarkCall(idCamPhongHop3, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
@@ -168,7 +169,7 @@ namespace RestShape
                         }
                         else
                         {
-                            if (ListBooking[i].ResourceId == "6086418d6f67970d379dbeb3")
+                            if (ListBooking[i].ResourceId == "2")
                             {
                                 getAddBookmarkCall(idCamPhongHop4, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
                                 getAddBookmarkCall(idCamPhongHop4_1, ListBooking[i].Title, ListBooking[i].StartTime, ListBooking[i].EndTime, ListBooking[i].Description, "");
